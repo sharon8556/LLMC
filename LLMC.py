@@ -1,9 +1,9 @@
 ##### from scipy import sparse
 import numpy as np
 import tensorflow as tf
-import tensorflow.compat.v1 as tf
-
-tf.disable_v2_behavior()
+# import tensorflow.compat.v1 as tf
+#
+# tf.disable_v2_behavior()
 from sklearn.neighbors import NearestNeighbors, kneighbors_graph
 from scipy.linalg import solve
 from scipy.sparse import csr_matrix, coo_matrix
@@ -13,7 +13,7 @@ import os
 import time
 import h5py
 
-ROOT_PATH = '../input'
+ROOT_PATH = 'input'
 OUTPUT_PATH = 'result'
 
 
@@ -47,7 +47,7 @@ def load_matlab_file(path_file, name_field):
     return out
 
 
-def get_similarity_matrix(X, method='reconstruct', K=10, metric='cosine', reg=1e-3, n_jobs=None):
+def get_similarity_matrix(X, method='reconstruct', K=10, metric='cosine', reg=1e-3, n_jobs=1):
     n_samples = X.shape[0]
     if method == 'average':
         s = kneighbors_graph(X, n_neighbors=K, metric=metric, include_self=False, n_jobs=n_jobs)
@@ -293,9 +293,9 @@ class BatchManager:
 
 
 class DatasetManager:
-    KIND_MOVIELENS_100K = 'movielens-100k'
-    KIND_MOVIELENS_1M = 'movielens-1m'
-    KIND_MOVIELENS_10M = 'movielens-10m'
+    KIND_MOVIELENS_100K = 'ml-100k'
+    KIND_MOVIELENS_1M = 'ml-1m'
+    KIND_MOVIELENS_10M = 'ml-10m'
     KIND_NETFLIX = 'netflix'
     KIND_FLIXSTER = 'flixster'
     KIND_DOUBAN = 'douban'
@@ -378,7 +378,7 @@ class DatasetManager:
 
         train_data = []
         test_data = []
-        with open('%s/movielens-100k-dataset/ml-100k/u1.base' % (ROOT_PATH), 'r') as f:
+        with open('%s/ml-100k/u1.base' % (ROOT_PATH), 'r') as f:
             for line in f:
                 cols = line.strip().split('\t')
                 assert len(cols) == 4
@@ -403,7 +403,7 @@ class DatasetManager:
                 train_data.append((u, i, r, t))
             f.close()
 
-        with open('%s/movielens-100k-dataset/ml-100k/u1.test' % (ROOT_PATH), 'r') as f:
+        with open('%s/ml-100k/u1.test' % (ROOT_PATH), 'r') as f:
             for line in f:
                 cols = line.strip().split('\t')
                 assert len(cols) == 4
@@ -443,9 +443,9 @@ class DatasetManager:
 
     def _init_data(self):
         if self.kind == self.KIND_MOVIELENS_1M:
-            self.__init_data('/movielens-1m-dataset/ratings.dat', '::')
+            self.__init_data('/ml-1m/ratings.dat', '::')
         elif self.kind == self.KIND_MOVIELENS_10M:
-            self.__init_data('/movielens-10m-dataset/ratings.dat', '::')
+            self.__init_data('/ml-10m/ratings.dat', '::')
         else:
             raise NotImplementedError()
 
